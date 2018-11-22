@@ -1,3 +1,4 @@
+from cloudshell.core.context.error_handling_context import ErrorHandlingContext
 from cloudshell.devices.driver_helper import get_logger_with_thread_id
 from cloudshell.devices.driver_helper import get_api
 from cloudshell.devices.driver_helper import get_cli
@@ -6,6 +7,11 @@ from cloudshell.devices.standards.firewall.configuration_attributes_structure im
 from cloudshell.firewall.firewall_resource_driver_interface import FirewallResourceDriverInterface
 from cloudshell.shell.core.driver_utils import GlobalLock
 from cloudshell.shell.core.resource_driver_interface import ResourceDriverInterface
+
+
+from f5.cli.f5_cli_handler import F5CliHandler
+from f5.snmp.f5_snmp_handler import F5SnmpHandler
+from f5.runners.f5_autoload_runner import F5AutoloadRunner
 
 
 class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriverInterface, GlobalLock):
@@ -35,8 +41,24 @@ class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriv
         :return Attribute and sub-resource information for the Shell resource
         :rtype: AutoLoadDetails
         """
+        logger = get_logger_with_thread_id(context)
+        logger.info("Autoload command started")
 
-        pass
+        with ErrorHandlingContext(logger):
+            resource_config = create_firewall_resource_from_context(self.SHELL_NAME, self.SUPPORTED_OS, context)
+            cs_api = get_api(context)
+
+            cli_handler = F5CliHandler(self._cli, resource_config, logger, cs_api)
+            snmp_handler = F5SnmpHandler(resource_config, logger, cs_api, cli_handler)
+
+            autoload_operations = F5AutoloadRunner(logger=logger,
+                                                   resource_config=resource_config,
+                                                   snmp_handler=snmp_handler)
+
+            autoload_details = autoload_operations.discover()
+            logger.info("Autoload command completed")
+
+            return autoload_details
 
     @GlobalLock.lock
     def restore(self, context, path, configuration_type, restore_method):
@@ -147,3 +169,52 @@ class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriv
         This is a good place to close any open sessions, finish writing to log files
         """
         pass
+
+
+if __name__ == "__main__":
+    import mock
+    from cloudshell.shell.core.driver_context import ResourceCommandContext, ResourceContextDetails, ReservationContextDetails
+
+    address = "192.168.42.202"
+    user = "root"
+    password = "admin"
+    cs_address = "192.168.85.18"
+
+    auth_key = 'h8WRxvHoWkmH8rLQz+Z/pg=='
+    api_port = 8029
+
+    context = ResourceCommandContext(*(None, ) * 4)
+    context.resource = ResourceContextDetails(*(None, ) * 13)
+    context.resource.name = 'F5 BIG-IP Firewall 2G'
+    context.resource.fullname = 'F5 BIG-IP Firewall 2G'
+    context.reservation = ReservationContextDetails(*(None, ) * 7)
+    context.reservation.reservation_id = '0cc17f8c-75ba-495f-aeb5-df5f0f9a0e97'
+    context.resource.attributes = {}
+    context.resource.address = address
+
+    for attr, val in [("User", user),
+                      ("Password", password),
+                      ("Sessions Concurrency Limit", 1),
+                      ("SNMP Read Community", "public"),
+                      ("SNMP Version", "2"),
+                      ("Enable SNMP", "True"),
+                      ("Disable SNMP", "False"),
+                      ("CLI Connection Type", "ssh")]:
+
+        context.resource.attributes['{}.{}'.format(F5BigIPFirewallShell2GDriver.SHELL_NAME, attr)] = val
+
+    context.connectivity = mock.MagicMock()
+    context.connectivity.server_address = cs_address
+
+    dr = F5BigIPFirewallShell2GDriver()
+    dr.initialize(context)
+
+    with mock.patch('__main__.get_api') as get_api:
+        get_api.return_value = type('api', (object,), {
+            'DecryptPassword': lambda self, pw: type('Password', (object,), {'Value': pw})()})()
+
+        result = dr.get_inventory(context=context)
+
+        for res in result.resources:
+            print res.__dict__
+

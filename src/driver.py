@@ -7,11 +7,14 @@ from cloudshell.devices.standards.firewall.configuration_attributes_structure im
 from cloudshell.firewall.firewall_resource_driver_interface import FirewallResourceDriverInterface
 from cloudshell.shell.core.driver_utils import GlobalLock
 from cloudshell.shell.core.resource_driver_interface import ResourceDriverInterface
-
+from cloudshell.devices.runners.run_command_runner import RunCommandRunner
+from cloudshell.devices.runners.state_runner import StateRunner
 
 from f5.cli.f5_cli_handler import F5CliHandler
 from f5.snmp.f5_snmp_handler import F5SnmpHandler
 from f5.runners.f5_autoload_runner import F5AutoloadRunner
+from f5.runners.f5_configuration_runner import F5ConfigurationRunner
+from f5.runners.f5_firmware_runner import F5FirmwareRunner
 
 
 class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriverInterface, GlobalLock):
@@ -60,6 +63,93 @@ class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriv
 
             return autoload_details
 
+    def run_custom_command(self, context, custom_command):
+        """Executes a custom command on the device
+
+        :param ResourceCommandContext context: The context object for the command with resource and
+            reservation info
+        :param str custom_command: The command to run
+        :return: the command result text
+        :rtype: str
+        """
+        logger = get_logger_with_thread_id(context)
+        logger.info("Run custom command started")
+
+        with ErrorHandlingContext(logger):
+            resource_config = create_firewall_resource_from_context(self.SHELL_NAME, self.SUPPORTED_OS, context)
+            cs_api = get_api(context)
+
+            cli_handler = F5CliHandler(self._cli, resource_config, logger, cs_api)
+
+            send_command_operations = RunCommandRunner(logger=logger,
+                                                       cli_handler=cli_handler)
+
+            response = send_command_operations.run_custom_command(custom_command=parse_custom_commands(custom_command))
+            logger.info("Run custom command ended with response: {}".format(response))
+
+            return response
+
+    def run_custom_config_command(self, context, custom_command):
+        """Executes a custom command on the device in configuration mode
+
+        :param ResourceCommandContext context: The context object for the command with resource and
+            reservation info
+        :param str custom_command: The command to run
+        :return: the command result text
+        :rtype: str
+        """
+        logger = get_logger_with_thread_id(context)
+        logger.info("Run custom config command started")
+
+        with ErrorHandlingContext(logger):
+            resource_config = create_firewall_resource_from_context(self.SHELL_NAME, self.SUPPORTED_OS, context)
+            cs_api = get_api(context)
+
+            cli_handler = F5CliHandler(self._cli, resource_config, logger, cs_api)
+
+            send_command_operations = RunCommandRunner(logger=logger,
+                                                       cli_handler=cli_handler)
+
+            response = send_command_operations.run_custom_config_command(
+                custom_command=parse_custom_commands(custom_command))
+
+            logger.info("Run custom config command ended with response: {}".format(response))
+
+            return response
+
+    def save(self, context, folder_path, configuration_type):
+        """Save a configuration file to the provided destination
+
+        :param ResourceCommandContext context: The context object for the command with resource and
+            reservation info
+        :param str folder_path: The path to the folder in which the configuration file will be saved
+        :param str configuration_type: startup or running config
+        :return The configuration file name
+        :rtype: str
+        """
+        logger = get_logger_with_thread_id(context)
+        logger.info("Save command started")
+
+        with ErrorHandlingContext(logger):
+            resource_config = create_firewall_resource_from_context(self.SHELL_NAME, self.SUPPORTED_OS, context)
+            cs_api = get_api(context)
+
+            configuration_type = configuration_type or 'running'
+
+            cli_handler = F5CliHandler(self._cli, resource_config, logger, cs_api)
+
+            configuration_operations = F5ConfigurationRunner(cli_handler=cli_handler,
+                                                             logger=logger,
+                                                             resource_config=resource_config,
+                                                             api=cs_api)
+
+            logger.info('Saving started... ')
+            response = configuration_operations.save(folder_path=folder_path, configuration_type=configuration_type)
+
+            logger.info("Save command completed")
+
+            return response
+
     @GlobalLock.lock
     def restore(self, context, path, configuration_type, restore_method):
         """Restores a configuration file
@@ -72,19 +162,29 @@ class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriv
         :param str configuration_type: Specify whether the file should update the startup or
             running config
         """
-        pass
+        logger = get_logger_with_thread_id(context)
+        logger.info("Restore command started")
 
-    def save(self, context, folder_path, configuration_type):
-        """Save a configuration file to the provided destination
+        with ErrorHandlingContext(logger):
+            resource_config = create_firewall_resource_from_context(self.SHELL_NAME, self.SUPPORTED_OS, context)
+            cs_api = get_api(context)
 
-        :param ResourceCommandContext context: The context object for the command with resource and
-            reservation info
-        :param str folder_path: The path to the folder in which the configuration file will be saved
-        :param str configuration_type: startup or running config
-        :return The configuration file name
-        :rtype: str
-        """
-        pass
+            configuration_type = configuration_type or 'running'
+            restore_method = restore_method or 'override'
+
+            cli_handler = F5CliHandler(self._cli, resource_config, logger, cs_api)
+
+            configuration_operations = F5ConfigurationRunner(cli_handler=cli_handler,
+                                                             logger=logger,
+                                                             resource_config=resource_config,
+                                                             api=cs_api)
+
+            logger.info('Restoring started...')
+            configuration_operations.restore(path=path,
+                                             restore_method=restore_method,
+                                             configuration_type=configuration_type)
+
+            logger.info("Restore command completed")
 
     @GlobalLock.lock
     def load_firmware(self, context, path):
@@ -94,31 +194,22 @@ class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriv
             reservation info
         :param str path: path to tftp server where firmware file is stored
         """
-        pass
+        logger = get_logger_with_thread_id(context)
+        logger.info("Load firmware command started")
 
-    def run_custom_command(self, context, custom_command):
-        """Executes a custom command on the device
+        with ErrorHandlingContext(logger):
+            resource_config = create_firewall_resource_from_context(self.SHELL_NAME, self.SUPPORTED_OS, context)
+            cs_api = get_api(context)
 
-        :param ResourceCommandContext context: The context object for the command with resource and
-            reservation info
-        :param str custom_command: The command to run
-        :return: the command result text
-        :rtype: str
-        """
+            cli_handler = F5CliHandler(self._cli, resource_config, logger, cs_api)
 
-        pass
+            logger.info("Start Loading Firmware...")
+            firmware_operations = F5FirmwareRunner(cli_handler=cli_handler, logger=logger)
 
-    def run_custom_config_command(self, context, custom_command):
-        """Executes a custom command on the device in configuration mode
+            response = firmware_operations.load_firmware(path=path)
+            logger.info("Load firmware command completed with response: {}".format(response))
 
-        :param ResourceCommandContext context: The context object for the command with resource and
-            reservation info
-        :param str custom_command: The command to run
-        :return: the command result text
-        :rtype: str
-        """
-
-        pass
+            return response
 
     def shutdown(self, context):
         """Sends a graceful shutdown to the device
@@ -126,7 +217,24 @@ class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriv
         :param ResourceCommandContext context: The context object for the command with resource and
             reservation info
         """
-        pass
+        logger = get_logger_with_thread_id(context)
+        logger.info("Shutdown command started")
+
+        with ErrorHandlingContext(logger):
+            resource_config = create_firewall_resource_from_context(self.SHELL_NAME, self.SUPPORTED_OS, context)
+            cs_api = get_api(context)
+
+            cli_handler = F5CliHandler(self._cli, resource_config, logger, cs_api)
+
+            state_operations = StateRunner(logger=logger,
+                                           api=cs_api,
+                                           resource_config=resource_config,
+                                           cli_handler=cli_handler)
+
+            response = state_operations.shutdown()
+            logger.info("Shutdown command completed with response: {}".format(response))
+
+            return response
 
     def orchestration_save(self, context, mode, custom_params):
         """Saves the Shell state and returns a description of the saved artifacts and information
@@ -140,7 +248,26 @@ class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriv
         :return: SavedResults serialized as JSON
         :rtype: OrchestrationSaveResult
         """
-        pass
+        logger = get_logger_with_thread_id(context)
+        logger.info("Orchestration save command started")
+
+        with ErrorHandlingContext(logger):
+            resource_config = create_firewall_resource_from_context(self.SHELL_NAME, self.SUPPORTED_OS, context)
+            cs_api = get_api(context)
+
+            mode = mode or 'shallow'
+
+            cli_handler = F5CliHandler(self._cli, resource_config, logger, cs_api)
+
+            configuration_operations = F5ConfigurationRunner(cli_handler=cli_handler,
+                                                             logger=logger,
+                                                             resource_config=resource_config,
+                                                             api=cs_api)
+
+            response = configuration_operations.orchestration_save(mode=mode, custom_params=custom_params)
+            logger.info("Orchestration save command completed with response: {}".format(response))
+
+            return response
 
     def orchestration_restore(self, context, saved_artifact_info, custom_params):
         """Restores a saved artifact previously saved by this Shell driver using the
@@ -151,7 +278,24 @@ class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriv
             saved artifacts and info
         :param str custom_params: Set of custom parameters for the restore operation
         """
-        pass
+        logger = get_logger_with_thread_id(context)
+        logger.info("Orchestration restore command started")
+
+        with ErrorHandlingContext(logger):
+            resource_config = create_firewall_resource_from_context(self.SHELL_NAME, self.SUPPORTED_OS, context)
+            cs_api = get_api(context)
+
+            cli_handler = F5CliHandler(self._cli, resource_config, logger, cs_api)
+
+            configuration_operations = F5ConfigurationRunner(cli_handler=cli_handler,
+                                                             logger=logger,
+                                                             resource_config=resource_config,
+                                                             api=cs_api)
+
+            configuration_operations.orchestration_restore(saved_artifact_info=saved_artifact_info,
+                                                           custom_params=custom_params)
+
+            logger.info("Orchestration restore command completed")
 
     def health_check(self, context):
         """Checks if the device is up and connectable
@@ -161,7 +305,24 @@ class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriv
         :return: Success or fail message
         :rtype: str
         """
-        pass
+        logger = get_logger_with_thread_id(context)
+        logger.info("Health check command started")
+
+        with ErrorHandlingContext(logger):
+            resource_config = create_firewall_resource_from_context(self.SHELL_NAME, self.SUPPORTED_OS, context)
+            cs_api = get_api(context)
+
+            cli_handler = F5CliHandler(self._cli, resource_config, logger, cs_api)
+
+            state_operations = StateRunner(logger=logger,
+                                           api=cs_api,
+                                           resource_config=resource_config,
+                                           cli_handler=cli_handler)
+
+            response = state_operations.health_check()
+            logger.info("Health check command ended with response: {}".format(response))
+
+            return response
 
     def cleanup(self):
         """

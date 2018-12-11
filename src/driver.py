@@ -4,17 +4,17 @@ from cloudshell.devices.driver_helper import get_api
 from cloudshell.devices.driver_helper import get_cli
 from cloudshell.devices.driver_helper import parse_custom_commands
 from cloudshell.devices.standards.firewall.configuration_attributes_structure import create_firewall_resource_from_context
-from cloudshell.firewall.firewall_resource_driver_interface import FirewallResourceDriverInterface
-from cloudshell.shell.core.driver_utils import GlobalLock
-from cloudshell.shell.core.resource_driver_interface import ResourceDriverInterface
 from cloudshell.devices.runners.run_command_runner import RunCommandRunner
 from cloudshell.devices.runners.state_runner import StateRunner
+from cloudshell.firewall.firewall_resource_driver_interface import FirewallResourceDriverInterface
+from cloudshell.f5.cli.f5_cli_handler import F5CliHandler
+from cloudshell.f5.snmp.f5_snmp_handler import F5SnmpHandler
+from cloudshell.f5.runners.f5_configuration_runner import F5ConfigurationRunner
+from cloudshell.f5.runners.f5_firmware_runner import F5FirmwareRunner
+from cloudshell.shell.core.driver_utils import GlobalLock
+from cloudshell.shell.core.resource_driver_interface import ResourceDriverInterface
 
-from f5.cli.f5_cli_handler import F5CliHandler
-from f5.snmp.f5_snmp_handler import F5SnmpHandler
-from f5.runners.f5_autoload_runner import F5AutoloadRunner
-from f5.runners.f5_configuration_runner import F5ConfigurationRunner
-from f5.runners.f5_firmware_runner import F5FirmwareRunner
+from f5.firewall.runners.f5_autoload_runner import F5FirewallAutoloadRunner
 
 
 class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriverInterface, GlobalLock):
@@ -54,9 +54,9 @@ class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriv
             cli_handler = F5CliHandler(self._cli, resource_config, logger, cs_api)
             snmp_handler = F5SnmpHandler(resource_config, logger, cs_api, cli_handler)
 
-            autoload_operations = F5AutoloadRunner(logger=logger,
-                                                   resource_config=resource_config,
-                                                   snmp_handler=snmp_handler)
+            autoload_operations = F5FirewallAutoloadRunner(logger=logger,
+                                                           resource_config=resource_config,
+                                                           snmp_handler=snmp_handler)
 
             autoload_details = autoload_operations.discover()
             logger.info("Autoload command completed")
@@ -380,5 +380,3 @@ if __name__ == "__main__":
 
         for res in result.resources:
             print res.__dict__
-
-

@@ -1,4 +1,3 @@
-from cloudshell.devices.autoload.autoload_builder import AutoloadDetailsBuilder
 from cloudshell.devices.standards.firewall.autoload_structure import GenericResource
 from cloudshell.devices.standards.firewall.autoload_structure import GenericChassis
 from cloudshell.devices.standards.firewall.autoload_structure import GenericPort

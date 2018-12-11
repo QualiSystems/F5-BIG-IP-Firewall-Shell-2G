@@ -19,7 +19,7 @@ from f5.runners.f5_firmware_runner import F5FirmwareRunner
 
 class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriverInterface, GlobalLock):
     SUPPORTED_OS = ["BIG[ -]?IP"]
-    SHELL_NAME = "F5 BigIp Firewall Shell 2G"
+    SHELL_NAME = "F5 Big IP Firewall Shell 2G"
 
     def __init__(self):
         super(F5BigIPFirewallShell2GDriver, self).__init__()
@@ -339,7 +339,7 @@ if __name__ == "__main__":
     address = "192.168.42.202"
     user = "root"
     password = "admin"
-    cs_address = "192.168.85.18"
+    cs_address = "192.168.85.44"
 
     auth_key = 'h8WRxvHoWkmH8rLQz+Z/pg=='
     api_port = 8029
@@ -352,6 +352,8 @@ if __name__ == "__main__":
     context.reservation.reservation_id = '0cc17f8c-75ba-495f-aeb5-df5f0f9a0e97'
     context.resource.attributes = {}
     context.resource.address = address
+    context.resource.family = "CS_Firewall"
+
 
     for attr, val in [("User", user),
                       ("Password", password),
@@ -378,4 +380,5 @@ if __name__ == "__main__":
 
         for res in result.resources:
             print res.__dict__
+
 

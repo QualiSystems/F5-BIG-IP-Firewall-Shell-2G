@@ -14,7 +14,7 @@ imports:
 
 node_types:
 
-  vendor.firewall.F5BigIPFirewallShell2G:
+  vendor.firewall.F5 Big IP Firewall Shell 2G:
     derived_from: cloudshell.nodes.Firewall
     #properties:
     #  my_property:

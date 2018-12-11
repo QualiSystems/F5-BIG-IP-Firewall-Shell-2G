@@ -1,2 +1,4 @@
 cloudshell-networking-devices>=2.3,<2.4
 cloudshell-firewall>=3.0,<3.1
+cloudshell-f5>=1.0,<1.1
+

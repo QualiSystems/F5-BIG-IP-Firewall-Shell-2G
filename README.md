@@ -234,9 +234,5 @@ To suggest an idea for the product, see [Quali's Idea box](https://community.qua
 To connect with Quali users and experts from around the world, ask questions and discuss issues, see [Quali's Community forums](https://community.quali.com/forums). 
 
 # Release Notes 
-(if not applicable - remove section)
-### What's New
 
-[Note]: Insert link to the release section of the shell GitHub repository to view changes made in each release. You should include a brief description of the fixes and enhancements made in this release.
-
-For release updates, see the shell's [GitHub releases page](https://github.com/QualiSystems/Ixia-IxNetworkController-Shell/releases).
+For release updates, see the shell's [GitHub releases page](https://github.com/QualiSystems/F5-BigIp-Firewall-Shell-2G/releases).

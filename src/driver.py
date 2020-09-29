@@ -354,7 +354,6 @@ if __name__ == "__main__":
     context.resource.address = address
     context.resource.family = "CS_Firewall"
 
-
     for attr, val in [("User", user),
                       ("Password", password),
                       ("Sessions Concurrency Limit", 1),

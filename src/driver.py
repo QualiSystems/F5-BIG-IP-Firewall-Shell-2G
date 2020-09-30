@@ -19,7 +19,7 @@ from f5.firewall.runners.f5_autoload_runner import F5FirewallAutoloadRunner
 
 class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriverInterface, GlobalLock):
     SUPPORTED_OS = ["BIG[ -]?IP"]
-    SHELL_NAME = "F5 Big IP Firewall Shell 2G"
+    SHELL_NAME = "F5 BIG-IP Firewall 2G"
 
     def __init__(self):
         super(F5BigIPFirewallShell2GDriver, self).__init__()
@@ -353,7 +353,6 @@ if __name__ == "__main__":
     context.resource.attributes = {}
     context.resource.address = address
     context.resource.family = "CS_Firewall"
-
 
     for attr, val in [("User", user),
                       ("Password", password),

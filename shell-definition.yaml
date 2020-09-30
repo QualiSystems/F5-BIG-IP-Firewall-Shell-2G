@@ -1,7 +1,7 @@
 tosca_definitions_version: tosca_simple_yaml_1_0
 
 metadata:
-  template_name: F5BigIPFirewallShell2G
+  template_name: F5 BIG-IP Firewall Shell 2G
   template_author: Quali
   template_version: 1.0.0
   template_icon: shell-icon.png
@@ -14,15 +14,8 @@ imports:
 
 node_types:
 
-  vendor.firewall.F5 Big IP Firewall Shell 2G:
+  vendor.firewall.F5 BIG-IP Firewall 2G:
     derived_from: cloudshell.nodes.Firewall
-    #properties:
-    #  my_property:
-    #    type: string          # optional values: string, integer, float, boolean, cloudshell.datatypes.Password
-    #    default: fast
-    #    description: Some attribute description
-    #    constraints:
-    #      - valid_values: [fast, slow]
     capabilities:
       auto_discovery_capability:
         type: cloudshell.capabilities.AutoDiscovery

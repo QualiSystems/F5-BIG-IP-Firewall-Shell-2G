@@ -93,8 +93,8 @@ The shell comprises:
 
 |File name|Description|
 |:---|:---|
-|F5BigIPFirewallShell2G.zip|F5 BIG-IP Firewall shell package|
-|cloudshell-firewall-f5-big-ip-2-gen-dependencies-package-1.0.0.zip|Shell Python dependencies (for offline deployments only)|
+|F5.BIG-IP.Firewall.Shell.2G.zip|F5 BIG-IP Firewall shell package|
+|F5.BIG-IP.Firewall.Shell.2G.offline_dependencies.zip|Shell Python dependencies (for offline deployments only)|
 
 # Importing and Configuring the Shell
 This section describes how to import the **F5 BIG-IP Firewall 2G Shell** and configure and modify the shell’s devices.
@@ -235,4 +235,4 @@ To connect with Quali users and experts from around the world, ask questions and
 
 # Release Notes 
 
-For release updates, see the shell's [GitHub releases page](https://github.com/QualiSystems/F5-BigIp-Firewall-Shell-2G/releases).
+For release updates, see the shell's [GitHub releases page](https://github.com/QualiSystems/F5-BIG-IP-Firewall-Shell-2G/releases).

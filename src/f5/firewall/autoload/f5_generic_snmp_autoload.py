@@ -1,9 +1,12 @@
-from cloudshell.devices.standards.firewall.autoload_structure import GenericResource
-from cloudshell.devices.standards.firewall.autoload_structure import GenericChassis
-from cloudshell.devices.standards.firewall.autoload_structure import GenericPort
-from cloudshell.devices.standards.firewall.autoload_structure import GenericPowerPort
-
-from cloudshell.f5.autoload.f5_generic_snmp_autoload import AbstractF5GenericSNMPAutoload
+from cloudshell.devices.standards.firewall.autoload_structure import (
+    GenericChassis,
+    GenericPort,
+    GenericPowerPort,
+    GenericResource,
+)
+from cloudshell.f5.autoload.f5_generic_snmp_autoload import (
+    AbstractF5GenericSNMPAutoload,
+)
 
 
 class F5FirewallGenericSNMPAutoload(AbstractF5GenericSNMPAutoload):

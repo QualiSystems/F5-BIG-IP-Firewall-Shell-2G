@@ -1,12 +1,15 @@
-![](https://github.com/QualiSystems/cloudshell-shells-documentaion-templates/blob/master/cloudshell_logo.png)
+[![Build Status](https://travis-ci.org/QualiSystems/F5-BIG-IP-Loadbalancer-Shell-2G.svg?branch=master)](https://travis-ci.org/QualiSystems/F5-BIG-IP-Loadbalancer-Shell-2G)
+[![codecov](https://codecov.io/gh/QualiSystems/F5-BIG-IP-Loadbalancer-Shell-2G/branch/master/graph/badge.svg)](https://codecov.io/gh/QualiSystems/F5-BIG-IP-Loadbalancer-Shell-2G)
 
-# **F5 BIG-IP Firewall 2G Shell**  
+![Image][1]
+
+# **F5 BIG-IP Firewall Shell 2G**
 
 Release date: December 2018
 
-Shell version: 1.1.0
+`Shell version: 1.1.0`
 
-Document version: 1.0
+`Document version: 1.0`
 
 # In This Guide
 
@@ -25,13 +28,13 @@ A shell integrates a device model, application or other technology with CloudShe
 ### Firewall Shells
 CloudShell's Firewall shells enable you to manage your Firewall device similar to your networking equipment but without connectivity. In CloudShell, a Firewall shell runs commands, such as Autoload, Load, and Save Configuration. 
 
-### **F5 BIG-IP Firewall 2G Shell**
-**F5 BIG-IP Firewall 2G Shell** provides you with connectivity and management capabilities such as device structure discovery and power management for the **F5 BIG-IP Firewall**. 
+### **F5 BIG-IP Firewall Shell 2G**
+**F5 BIG-IP Firewall Shell 2G** provides you with connectivity and management capabilities such as device structure discovery and power management for the **F5 BIG-IP Firewall**. 
 
 For more information on the **F5 BIG-IP Firewall**, see the official **F5 BIG-IP** product documentation.
 
 ### Standard version
-**F5 BIG-IP Firewall 2G Shell 1.0.0** is based on the **Firewall Shell Standard version 3.0.0**.
+**F5 BIG-IP Firewall Shell 2G 1.0.0** is based on the **Firewall Shell Standard version 3.0.0**.
 
 For detailed information about the shell’s structure and attributes, see the **Firewall Shell Standard version**.(https://github.com/QualiSystems/cloudshell-standards/blob/master/Documentation/firewall_standard.md) in GitHub.
 
@@ -40,7 +43,7 @@ For detailed information about the shell’s structure and attributes, see the *
 
 ### Requirements
 
-Release: **F5 BIG-IP Firewall 2G Shell**
+Release: **F5 BIG-IP Firewall Shell 2G**
 
 * CloudShell 8.0 and abovead
 
@@ -71,7 +74,7 @@ https://github.com/QualiSystems/cloudshell-standards/blob/master/Documentation/f
 ### Automation
 This section describes the automation (driver) associated with the data model. The shell’s driver is provided as part of the shell package. There are two types of automation processes, Autoload and Resource. Autoload is executed when creating the resource in the **Inventory** dashboard, while resource commands are run in the sandbox.
 
-The following resource commands are available on the **F5 BIG-IP Firewall 2G Shell**:
+The following resource commands are available on the **F5 BIG-IP Firewall Shell 2G**:
 
 * Health Check
 * Run Custom Command
@@ -85,7 +88,7 @@ For detailed information on each of the above commands, see the following sectio
 https://github.com/QualiSystems/cloudshell-standards/blob/master/Documentation/firewall_standard.md#commands
 
 # Downloading the Shell
-The **F5 BIG-IP Firewall 2G Shell** is available from the [Quali Community Integrations](https://community.quali.com/integrations) page. 
+The **F5 BIG-IP Firewall Shell 2G** is available from the [Quali Community Integrations](https://community.quali.com/integrations) page. 
 
 Download the files into a temporary location on your local machine. 
 
@@ -97,7 +100,7 @@ The shell comprises:
 |F5.BIG-IP.Firewall.Shell.2G.offline_dependencies.zip|Shell Python dependencies (for offline deployments only)|
 
 # Importing and Configuring the Shell
-This section describes how to import the **F5 BIG-IP Firewall 2G Shell** and configure and modify the shell’s devices.
+This section describes how to import the **F5 BIG-IP Firewall Shell 2G** and configure and modify the shell’s devices.
 
 ### Importing the shell into CloudShell
 
@@ -236,3 +239,6 @@ To connect with Quali users and experts from around the world, ask questions and
 # Release Notes 
 
 For release updates, see the shell's [GitHub releases page](https://github.com/QualiSystems/F5-BIG-IP-Firewall-Shell-2G/releases).
+
+
+[1]: https://github.com/QualiSystems/shellfoundry-tosca-networking-template/blob/master/cloudshell_logo.png

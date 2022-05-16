@@ -1,4 +1,11 @@
-cloudshell-networking-devices>=2.8,<2.9
-cloudshell-firewall>=3.0,<3.1
-cloudshell-f5>=1.1,<1.2
+cloudshell-shell-firewall-standard
+cloudshell-shell-flows
+cloudshell-cli
+cloudshell-snmp
+cloudshell-automation-api
+cloudshell-shell-core
+cloudshell-logging
 
+cloudshell-shell-standards
+
+cloudshell-f5>=2.0.0

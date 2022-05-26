@@ -1,50 +1,24 @@
-# # old imports ---
-# from cloudshell.core.context.error_handling_context import ErrorHandlingContext
-# from cloudshell.devices.driver_helper import (
-#     get_api,
-#     get_cli,
-#     get_logger_with_thread_id,
-#     parse_custom_commands,
-# )
-# from cloudshell.devices.runners.run_command_runner import RunCommandRunner
-# from cloudshell.devices.runners.state_runner import StateRunner
-# from cloudshell.devices.standards.firewall.configuration_attributes_structure import (
-#     create_firewall_resource_from_context,
-# )
-# from cloudshell.f5.cli.f5_cli_handler import F5CliHandler
-# from cloudshell.f5.runners.f5_configuration_runner import F5ConfigurationRunner
-# from cloudshell.f5.runners.f5_firmware_runner import F5FirmwareRunner
-# from cloudshell.f5.snmp.f5_snmp_handler import F5SnmpHandler
-# from cloudshell.firewall.firewall_resource_driver_interface import (
-#     FirewallResourceDriverInterface,
-# )
-# from cloudshell.shell.core.driver_utils import GlobalLock
-# from cloudshell.shell.core.resource_driver_interface import ResourceDriverInterface
-#
-# from f5.firewall.runners.f5_autoload_runner import F5FirewallAutoloadRunner
-
-from cloudshell.shell.core.resource_driver_interface import ResourceDriverInterface
+from cloudshell.shell.standards.firewall.autoload_model import FirewallResourceModel
 from cloudshell.shell.standards.firewall.driver_interface import (
     FirewallResourceDriverInterface,
 )
 from cloudshell.shell.standards.firewall.resource_config import FirewallResourceConfig
-from cloudshell.shell.core.driver_utils import GlobalLock
-from cloudshell.shell.core.session.logging_session import LoggingSessionContext
-from cloudshell.shell.core.session.cloudshell_session import CloudShellSessionContext
+
 from cloudshell.cli.service.cli import CLI
 from cloudshell.cli.service.session_pool_manager import SessionPoolManager
 from cloudshell.f5.cli.f5_cli_configurator import F5CliConfigurator
-from cloudshell.f5.flows.f5_enable_disable_snmp_flow import (
-    F5EnableDisableSnmpFlow,
-)
-from cloudshell.snmp.snmp_configurator import EnableDisableSnmpConfigurator
-from cloudshell.shell.standards.firewall.autoload_model import FirewallResourceModel
 from cloudshell.f5.flows.f5_autoload_flow import BigIPAutoloadFlow
-from cloudshell.shell.flows.command.basic_flow import RunCommandFlow
 from cloudshell.f5.flows.f5_configuration_flow import F5ConfigurationFlow
+from cloudshell.f5.flows.f5_enable_disable_snmp_flow import F5EnableDisableSnmpFlow
 from cloudshell.f5.flows.f5_firmware_flow import F5FirmwareFlow
 from cloudshell.f5.flows.f5_state_flow import F5StateFlow
+from cloudshell.shell.core.driver_utils import GlobalLock
 from cloudshell.shell.core.orchestration_save_restore import OrchestrationSaveRestore
+from cloudshell.shell.core.resource_driver_interface import ResourceDriverInterface
+from cloudshell.shell.core.session.cloudshell_session import CloudShellSessionContext
+from cloudshell.shell.core.session.logging_session import LoggingSessionContext
+from cloudshell.shell.flows.command.basic_flow import RunCommandFlow
+from cloudshell.snmp.snmp_configurator import EnableDisableSnmpConfigurator
 
 
 class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriverInterface):
@@ -52,7 +26,6 @@ class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriv
     SHELL_NAME = "F5 BIG IP Firewall 2G"
 
     def __init__(self):
-        # super(F5BigIPFirewallShell2GDriver, self).__init__() # todo ?
         self._cli = None
 
     def initialize(self, context):
@@ -110,7 +83,6 @@ class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriv
         :rtype: str
         """
         with LoggingSessionContext(context) as logger:
-            # logger.info("Run custom command started")
             api = CloudShellSessionContext(context).get_api()
 
             resource_config = FirewallResourceConfig.from_context(
@@ -125,7 +97,6 @@ class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriv
 
             send_command_operations = RunCommandFlow(logger, cli_configurator)
             response = send_command_operations.run_custom_command(custom_command)
-            # logger.info("Run custom command ended with response: {}".format(response))
             return response
 
     def run_custom_config_command(self, context, custom_command):
@@ -472,7 +443,6 @@ class F5BigIPFirewallShell2GDriver(ResourceDriverInterface, FirewallResourceDriv
 
 
 if __name__ == "__main__":
-    # todo clean this all up
     import mock
     from cloudshell.shell.core.driver_context import (
         ReservationContextDetails,

@@ -241,11 +241,13 @@ class F5BigIPFirewallShell2GDriver(
                 vrf_management_name = resource_config.vrf_management_name
 
             logger.info("Start Load Firmware")
-            firmware_operations = F5FirmwareFlow(logger, cli_configurator)
-            response = firmware_operations.load_firmware(
+            firmware_operations = F5FirmwareFlow(
+                resource_config, logger, cli_configurator
+            )
+            firmware_operations.load_firmware(
                 path=path, vrf_management_name=vrf_management_name
             )
-            logger.info(f"Finish Load Firmware: {response}")
+            logger.info("Finish Load Firmware")
 
     def shutdown(self, context: ResourceCommandContext) -> str:
         """Sends a graceful shutdown to the device.
